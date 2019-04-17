@@ -24,7 +24,7 @@ public class AgenciesGestor {
                 String zipCode = req.queryParams("zip_code");
 
                 String order = req.queryParams("order");
-                
+
                 String mapsUrl = "https://maps.googleapis.com/maps/api/geocode/json?address="+zipCode+"&key=AIzaSyBfnGx5oJwDXT_XsdqMsF1moWRH0NQYKr0";
 
                 JsonArray mapResults = (JsonArray) readUrl(mapsUrl);
@@ -33,7 +33,7 @@ public class AgenciesGestor {
                 String longitude = location.getAsJsonObject("geometry").getAsJsonObject("location").get("lng").getAsString();
                 String agenciesUrl = "https://api.mercadolibre.com/sites/" + siteId + "/payment_methods/" + paymentMethod + "/agencies?near_to=" + latitude+","+longitude;
 
-
+                System.out.println(agenciesUrl);
                 JsonArray data = (JsonArray) readUrl(agenciesUrl);
                 TypeToken<ArrayList<Agency>> token = new TypeToken<ArrayList<Agency>>() {};
                 ArrayList<Agency> agencias = new Gson().fromJson(data, token.getType());
@@ -46,10 +46,11 @@ public class AgenciesGestor {
                 for (int i = 0; i < agencias.size(); i++) {
                     System.out.println(agencias.get(i));
                 }
-                return "SUCCESS";
+                System.out.println(data);
+                return new Gson().toJson(new StandardResponse(StatusResponse.SUCCESS, data));
             } catch(IOException e) {
                 e.printStackTrace();
-                return "ERROR";
+                return new Gson().toJson(new StandardResponse(StatusResponse.ERROR, ""));
             }
         });
 
