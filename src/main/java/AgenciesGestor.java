@@ -22,6 +22,7 @@ public class AgenciesGestor {
                 String siteId = req.queryParams("site_id");
                 String paymentMethod = req.queryParams("payment_method_id");
                 String zipCode = req.queryParams("zip_code");
+                String nearTo = req.queryParams("near_to");
 
                 String order = req.queryParams("order");
 
@@ -31,8 +32,12 @@ public class AgenciesGestor {
                 JsonObject location =  (JsonObject) mapResults.get(0);
                 String latitude = location.getAsJsonObject("geometry").getAsJsonObject("location").get("lat").getAsString();
                 String longitude = location.getAsJsonObject("geometry").getAsJsonObject("location").get("lng").getAsString();
-                String agenciesUrl = "https://api.mercadolibre.com/sites/" + siteId + "/payment_methods/" + paymentMethod + "/agencies?near_to=" + latitude+","+longitude;
-
+                String agenciesUrl = null;
+                if(nearTo != null) {
+                    agenciesUrl = "https://api.mercadolibre.com/sites/" + siteId + "/payment_methods/" + paymentMethod + "/agencies?near_to=" + nearTo;
+                } else {
+                    agenciesUrl = "https://api.mercadolibre.com/sites/" + siteId + "/payment_methods/" + paymentMethod + "/agencies?near_to=" + latitude + "," + longitude;
+                }
                 System.out.println(agenciesUrl);
                 JsonArray data = (JsonArray) readUrl(agenciesUrl);
                 TypeToken<ArrayList<Agency>> token = new TypeToken<ArrayList<Agency>>() {};
